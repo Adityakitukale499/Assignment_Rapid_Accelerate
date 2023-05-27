@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Train Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url(./adhirej-j-r-nair-1mXWRoDIZIM-unsplash.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        h1,
+        h2 {
+            display: inline;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .heading{
+            text-align: center;
+            margin: 30px;
+        }
+        .search-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* select {
+            padding: 5px;
+            margin-right: 10px;
+        } */
+
+        /* .search-form button {
+            padding: 5px 10px;
+        } */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        select {
+            padding: 10px;
+            width: 25%;
+            border-radius: 5px;            
+            background-color: #f2f2f2;
+            font-size: 15px;
+            font-family: 'Franklin Gothic Medium', sans-serif;
+        }
+
+        button {
+            margin-top: 40px;
+            padding: 15px 50px;
+            border-radius: 10px;
+            background-color: rgb(125, 198, 154);
+        }
+        button:hover{
+            background-color: #60cc75;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="heading">
+        <h1>Train Search</h1>
+    </div>
+
+    <div class="container">
+        <select id="source">
+            <option value="" disabled selected hidden>Source</option>
+            <option value="Station A">Station A</option>
+            <option value="Station B">Station B</option>
+            <option value="Station C">Station C</option>
+            <!-- Add more station options as needed -->
+        </select>
+
+
+        <select id="destination">
+            <option value="" disabled selected hidden>Destination</option>
+            <option value="Station A">Station A</option>
+            <option value="Station B">Station B</option>
+            <option value="Station C">Station C</option>
+            <!-- Add more station options as needed -->
+        </select>
+    </div>
+    <div class="container">
+        <button id="searchBtn">Search</button>
+    </div>
+
+    <div class="heading">
+        <h2>Train Search Results</h2>
+    </div>
+    <table id="trainTable">
+        <thead>
+            <tr>
+                <th>Train Name</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Ticket Price (Rs)</th>
+            </tr>
+        </thead>
+        <tbody id="trainBody">
+            <!-- Train search results will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to make an HTTP GET request to the server and retrieve train search results
+        function searchTrains() {
+            const source = document.getElementById('source').value;
+            const destination = document.getElementById('destination').value;
+
+            fetch(`/trains?source=${source}&destination=${destination}`)
+                .then(response => response.json())
+                .then(data => {
+                    const trainBody = document.getElementById('trainBody');
+                    trainBody.innerHTML = '';
+
+                    data.forEach(train => {
+                        const row = document.createElement('tr');
+
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = train.name;
+                        row.appendChild(nameCell);
+
+                        const departureCell = document.createElement('td');
+                        departureCell.textContent = train.departureTime;
+                        row.appendChild(departureCell);
+
+                        const arrivalCell = document.createElement('td');
+                        arrivalCell.textContent = train.arrivalTime;
+                        row.appendChild(arrivalCell);
+
+                        const priceCell = document.createElement('td');
+                        priceCell.textContent = train.price;
+                        row.appendChild(priceCell);
+
+                        trainBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error retrieving train search results:', error);
+                });
+        }
+
+        // Attach click event listener to the search button
+        const searchBtn = document.getElementById('searchBtn');
+        searchBtn.addEventListener('click', searchTrains);
+    </script>
+</body>
+
+</html>
